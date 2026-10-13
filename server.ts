@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 
@@ -282,7 +283,13 @@ app.post('/api/pronunciation', async (req, res) => {
 
 // Mount Vite middleware in dev or serve static files in production
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
+  const distPath = path.join(__dirname, 'dist');
+  const distExists = fs.existsSync(path.join(distPath, 'index.html'));
+
+  if (process.env.NODE_ENV !== 'production' || !distExists) {
+    if (!distExists && process.env.NODE_ENV === 'production') {
+      console.log('Notice: Production dist folder not found. Serving on-the-fly via Vite middleware.');
+    }
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -290,9 +297,9 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(__dirname, 'dist')));
+    app.use(express.static(distPath));
     app.get('*', (_req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 
