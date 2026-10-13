@@ -1,0 +1,6 @@
+{
+  "name": "Les Amis Français - Kids French Learning",
+  "description": "An interactive, ad-free Android French learning adventure for kids aged 4–10 featuring 6 animated animal friends, AI-generated dialogue and stories, speech recognition, mini-games, and rewards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
